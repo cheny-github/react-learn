@@ -13,10 +13,10 @@
   <script src="../js/react.development.js"></script>
   <script src="../js/react-dom.development.js"></script>
   <script src="../js/babel.min.js"></script>
-
-  <script type="text/babel">
-    
-    const h1 = <h1>Hello World!</h1>
+  <!-- 指定type="text/babel"使用babel解析JSX语法 -->
+  <script type="text/babel"> 
+    const name ='cy'
+    const h1 = <h1>Hello {name}!</h1>
     ReactDOM.render(h1,
     document.querySelector("#root")
     )
