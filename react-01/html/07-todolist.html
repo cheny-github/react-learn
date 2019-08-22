@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <h1>编码总结：</h1>
+    <hr>
+    <h3>1.父组件使用props向子组件传递数据</h3>
+    <h3>2.如果子组件想要修改父组件中的数据，需要父组件提供一个修改数据的接口，并通过props传递给子组件</h3>
+    <h3>3.需要被渲染的数据总是放在render方法中，以便渲染时重新进行计算。父组件传递的接口不必放在render中，因为接口不需要重新计算</h3>
+
+</body>
+<script src="../js/react.development.js"></script>
+<script src="../js/react-dom.development.js"></script>
+<script src="../js/babel.min.js"></script>
+<script src="../js/prop-types.js"></script>
+<script type="text/babel" >
+
+const root =document.querySelector("#root");
+
+class TodoList extends React.Component{
+    // 设计数据 
+    // state={
+    //     todos:['1','2','3']
+    // }
+    // 数据类型
+    static propTypes={
+        todos:PropTypes.array
+    }
+    // 设置数据默认值
+    constructor(props){
+        super(props)
+        this.state ={}
+        this.state.todos=['1','2','3']
+    }
+
+    add =(todoItem)=>{
+        this.setState({
+            todos:[todoItem,...this.state.todos]
+        })
+    }
+    render(){
+        return(
+            <div>
+                <h1>TodoList</h1>
+                <AddTodo addTodoItem={this.add} count ={this.state.todos.length}></AddTodo>
+                <TodoItems todos={this.state.todos}></TodoItems>
+            </div>
+        )
+    }
+}
+
+
+
+// 划分组件
+class AddTodo extends React.Component{
+    static setInitState(txtBox){
+        txtBox.value=""
+        txtBox.focus()
+    }
+    constructor(props){
+        super(props)
+        this.inputRef = React.createRef()
+        const {addTodoItem} =this.props
+        this.addTodoItem = ()=>{
+            const txtBox= this.inputRef.current
+            const value = txtBox.value.trim()
+            if (!value) {
+                AddTodo.setInitState(txtBox)
+                return 
+            }
+            addTodoItem(value)
+            AddTodo.setInitState(txtBox)
+        }
+    }
+    render(){
+        const {count} = this.props
+        return(
+            <div>
+                <input type="text" ref={this.inputRef} />
+                <button onClick={this.addTodoItem}>add#{count}</button>
+            </div>
+        )
+    }
+}
+class TodoItems extends React.Component{
+    render(){
+        const {todos} = this.props;
+        const todoElements= todos.map((todoItem,index)=><li key={index}>{todoItem}</li>)
+        return(
+            <ul>
+                {todoElements}
+            </ul>
+        )
+    }
+}
+
+ReactDOM.render(<TodoList/>,root)
+</script>
+</html>
