@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="root2"></div>
+</body>
+<script src="../js/react.development.js"></script>
+<script src="../js/react-dom.development.js"></script>
+<script src="../js/babel.min.js"></script>
+<script src="../js/prop-types.js"></script>
+<script type="text/babel">
+    class MyComponent extends React.Component{
+        render(){
+            return(
+                <ul>
+                    <li>姓名:{this.props.name}</li>
+                    <li>性别:{this.props.gender}</li>
+                    <li>年龄:{this.props.age}</li>
+                </ul>
+            )
+        }
+        //限定属性
+        static propTypes={
+            name:PropTypes.string.isRequired,
+            gender:PropTypes.string,
+            age:PropTypes.number
+        }
+        // 设置默认值
+        static defaultProps={ //与prop-types库没有关系
+            gender:'男'
+        }
+    }
+
+    let p ={
+        name:'tom',
+        gender:'male',
+        age:20
+    }
+    ReactDOM.render(<MyComponent {...p}/>,root)
+    ReactDOM.render(<MyComponent name={p.name} gender={p.gender} age={p.age} />,root2)
+</script>
+</html>
