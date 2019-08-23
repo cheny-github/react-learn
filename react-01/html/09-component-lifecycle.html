@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <hr>
+    <h1>编码总结</h1>
+    <h3>
+        <pre>
+                组件的生命周期：
+                表示了一个组件从创建到销毁所必经的阶段，
+                每个阶段都会在某个时刻会调用回调函数进行消息的通知，我注册相应的回调后可以接收到消息
+                React的生命周期如下:
+                创建：
+                1.constructor(通过ReactDOM.render调用)
+                2.componentWillMount
+                3.render
+                4.componentDidMount
+                 ⬇
+                更新：（通过setState方法触发）
+                1.componentWillUpdate
+                      ⬇ ⬆
+                2.render
+                      ⬇ ⬆
+                3.componentDidUpdate
+
+                卸载：(通过ReactDOM.unmountComponentAtNode)
+                componentWillUnmount
+
+
+        </pre>
+    </h3>
+<script src="../js/react.development.js"></script>
+<script src="../js/react-dom.development.js"></script>
+<script src="../js/babel.min.js"></script>
+<script src="../js/prop-types.js"></script>
+<script type="text/babel">
+    /*
+    需求: 自定义组件
+      1. 让指定的文本做显示/隐藏的动画
+      2. 切换时间为2S
+      3. 点击按钮从界面中移除组件界面
+    */    
+    class MyComponent extends React.Component {
+
+        componentDidMount(){
+        this.timeId= setInterval(()=>{
+                let {opacity} =this.state
+                opacity-=0.05
+                opacity = opacity<0?1:opacity
+                this.setState({
+                    opacity
+                })
+            },100)
+        }
+
+        state={
+            opacity:1
+        }
+        h1Ref=React.createRef()
+        removeH1=()=>{
+            clearInterval(this.timeId)
+            this.h1Ref.current.remove()
+        }
+        render() {
+            const{opacity} = this.state
+            return (
+                <div>
+                    <h1 style={{opacity}} ref={this.h1Ref}>React真好玩</h1>
+                    <button onClick={this.removeH1}>好玩个屁</button>
+                </div>
+            )
+        }
+        }
+
+    ReactDOM.render(<MyComponent/> ,root)
+</script>
+</body>
+</html>
