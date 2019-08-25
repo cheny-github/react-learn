@@ -1,6 +1,9 @@
 import React ,{Component} from 'react'
 import axios from 'axios'
+import Pubsub from 'pubsub-js'
+
 import './main.css'
+
 export default class Main extends Component{
     state={
         firstView:{show:true,data:'请输入关键字进行搜索'},
@@ -41,6 +44,37 @@ export default class Main extends Component{
         })
     }
 
+    componentWillMount(){
+        Pubsub.subscribe("search",async (_,kw)=>{
+            const url = `https://api.github.com/search/users?q=${kw}`
+            try {
+                this.showLoading()
+                let {data:result}= await axios.get(url)  
+                // 取出相关信息
+                const users = result.items.map(
+                    ({login:username,avatar_url,html_url:home})=>{
+                        return {
+                            username,avatar_url,home
+                        }
+                    }
+                )
+                
+                if (users.length !==0) {
+                    this.showResult(users)
+                }else{
+                    this.showError('搜索结果不存在')
+                }
+
+    
+            } catch ({response:{status,statusText}}) {
+                debugger
+                this.showError(status+':'+statusText)
+            }
+        })
+    }
+
+    // 通过父组件实现兄弟间数据传递
+    /*
     async componentWillReceiveProps(nextProp){
     const url = `https://api.github.com/search/users?q=${nextProp.usernameKW}`
         try {
@@ -63,6 +97,9 @@ export default class Main extends Component{
         }
 
     }
+     */
+
+
 
     getUsersViewJSX(){
         let users =this.state.usersView.data
